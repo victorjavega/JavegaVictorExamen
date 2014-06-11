@@ -21,6 +21,11 @@ public class VentanaPrincipal extends JFrame {
 	private JTextField horaEntradaTxt;
 	private JTextField horaSalidaTxt;
 	private JTextField precioPagarTxt;
+	private Coche coche;
+	private JTextField textID;
+	private JComboBox<Coche> listadoCoches;
+	private DB datos;
+
 
 	/**
 	 * Launch the application.
@@ -50,7 +55,25 @@ public class VentanaPrincipal extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JComboBox listadoCoches = new JComboBox();
+		
+		
+		listadoCoches = new JComboBox<Coche>();
+		listadoCoches.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				coche=listadoCoches.getItemAt(listadoCoches.getSelectedIndex());
+				if(coche!=null)
+				{
+				
+				matriculaTxt.setText(coche.getMatricula());
+				horaEntradaTxt.setText(String.valueOf(coche.getHoraentrada()));
+				horaSalidaTxt.setText(String.valueOf(coche.getHorasalida()));
+				precioPagarTxt.setText(String.valueOf(coche.getPrecio()));
+				//textID.setText(String.valueOf(coche.getid()));
+				
+				}
+			}
+		
+		});
 		listadoCoches.setBounds(10, 29, 414, 20);
 		contentPane.add(listadoCoches);
 		
@@ -80,11 +103,13 @@ public class VentanaPrincipal extends JFrame {
 		matriculaTxt.setColumns(10);
 		
 		horaEntradaTxt = new JTextField();
+		horaEntradaTxt.setText("(0-23)");
 		horaEntradaTxt.setColumns(10);
 		horaEntradaTxt.setBounds(119, 97, 86, 20);
 		contentPane.add(horaEntradaTxt);
 		
 		horaSalidaTxt = new JTextField();
+		horaSalidaTxt.setText("(0-23)");
 		horaSalidaTxt.setColumns(10);
 		horaSalidaTxt.setBounds(119, 133, 86, 20);
 		contentPane.add(horaSalidaTxt);
@@ -96,9 +121,41 @@ public class VentanaPrincipal extends JFrame {
 		contentPane.add(precioPagarTxt);
 		
 		JButton btnNewButton = new JButton("A PAGAR");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				boolean correcto=true;
+				if((matriculaTxt.getText()).equals("")){
+					JOptionPane.showMessageDialog(null, "Has introducido mal La Matricula");
+				}
+				 if((horaEntradaTxt.getText().equals(""))){
+					// int horaentrada=0;
+					// if(horaentrada>23)
+					// (correcto = false);
+					JOptionPane.showMessageDialog(null, "Has introducido mal la HoraEntrada");
+					 
+					 }
+				 if((horaSalidaTxt.getText()).equals("")){
+					JOptionPane.showMessageDialog(null, "Has introducido mal el HoraSalida");
+				}
+				
+				else{
+				//2.- Crearemos un nuevo objeto delincuente
+				Coche c=new Coche();
+				int ID=0;
+				
+				c.setHoraentrada(Integer.parseInt(horaEntradaTxt.getText()));
+				c.setHorasalida(Integer.parseInt(horaSalidaTxt.getText()));
+				c.setPrecio(Integer.parseInt(precioPagarTxt.getText()));
+				c.setid(ID);
+				listadoCoches.addItem(c);
+				
+				}
+			}
+		});
 		btnNewButton.setBounds(230, 58, 194, 128);
 		contentPane.add(btnNewButton);
 		
-		
+		datos=new DB(listadoCoches);
+		datos.leerCoche();
 	}
 }
